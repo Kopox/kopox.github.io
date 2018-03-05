@@ -14,6 +14,7 @@ var pictureMode = true;
 var pictureWidth = 1; // 1.77 for pictures from phone
 
 var autoSpawn = true;
+var maxBubbles = 15;
 
 let pictures = [];
 
@@ -29,15 +30,16 @@ function setup() {
     // Initialize the screen
     createCanvas(windowWidth, windowHeight, 0, 0);
     background(0);
+    maxBubbles = width * height / 6000 + 2;
+    
+    // Indications
+    print('v1.1');
+    print('Hi! You can use "A", "P", "SPACE_BAR", and the mouse.');
     
     // Create a population of bubbles
 /*    for (var i = 0; i < (width * height / 140000 + 2); i++) {
         bubbles[i] = new Bubble(random(width), random(height), random(minSize, maxSize));
     }*/
-    
-    // Indications
-    print('v1.0');
-    print('Hi! You can use "A", "P", "SPACE_BAR", and the mouse.');
 }
 
 function draw() {
@@ -70,7 +72,7 @@ function draw() {
     }
     
     // Add bubbles if there is space for it
-    if (autoSpawn && bubbles.length < (width * height / 3000 + 2)) {
+    if (autoSpawn && bubbles.length < maxBubbles) {
         var newBubble = new Bubble(random(width), random(height), random(minSize, maxSize));
         var doesNewBubbleTouch = false;
         for(var b of bubbles) {
@@ -87,6 +89,7 @@ function draw() {
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
     background(0);
+    maxBubbles = width * height / 6000 + 2;
 }
 
 function mousePressed() {
@@ -107,7 +110,7 @@ function keyPressed() {
     if (key === "S") {
         autoSpawn = !autoSpawn;
     }
-    if (keyCode === 32) { // Space bar = clear the bubbles array
+    if (keyCode === 32) {
         background(0);
         bubbles.splice(0, bubbles.length);
     }
