@@ -101,18 +101,37 @@ function mouseDragged() {
 }
 
 function keyPressed() {
+    var modePressed = '';
+    var onOff = 'On';
+    
     if (key === "A") {
-        accMode = !accMode;     
-    }
-    if (key === "P") {
+        accMode = !accMode;
+        modePressed = 'Acceleration mode';
+        if (!accMode) {
+            onOff = 'OFF';
+        }
+    } else if (key === "P") {
         pictureMode = !pictureMode;
-    }
-    if (key === "S") {
+        modePressed = 'Picture mode';
+        if (!pictureMode) {
+            onOff = 'OFF';
+        }
+    } else if (key === "S") {
         autoSpawn = !autoSpawn;
-    }
-    if (keyCode === 32) {
+        modePressed = 'Auto-spawn';
+        if (!autoSpawn) {
+            onOff = 'OFF';
+        }
+    } else if (keyCode === 32) {
         background(0);
         bubbles.splice(0, bubbles.length);
+    }
+    
+    // Write a message to indicate what happened upon key pressed
+    if (modePressed != '') {
+        textSize(32);
+        fill(255);
+        text(modePressed + ': ' + onOff, 20, 40);
     }
 }
 
