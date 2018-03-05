@@ -42,9 +42,6 @@ function setup() {
 
 function draw() {
     background(0, 0, 0, 20);
-    if (random() < 1) {
-        //drawThings();
-    }
     
     // Let all the bubbles move and appear on screen
     for (var b of bubbles) {
@@ -110,7 +107,7 @@ function keyPressed() {
     if (key === "S") {
         autoSpawn = !autoSpawn;
     }
-    if (keyCode === 32) {
+    if (keyCode === 32) { // Space bar = clear the bubbles array
         background(0);
         bubbles.splice(0, bubbles.length);
     }
