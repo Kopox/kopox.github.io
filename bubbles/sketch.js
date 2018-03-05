@@ -30,7 +30,7 @@ function setup() {
     // Initialize the screen
     createCanvas(windowWidth, windowHeight, 0, 0);
     background(0);
-    maxBubbles = width * height / 6000 + 2;
+    maxBubbles = width * height / 3000 + 2;
     
     // Indications
     print('v1.1');
@@ -89,7 +89,7 @@ function draw() {
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
     background(0);
-    maxBubbles = width * height / 5000 + 2;
+    maxBubbles = width * height / 3000 + 2;
 }
 
 function mousePressed() {
