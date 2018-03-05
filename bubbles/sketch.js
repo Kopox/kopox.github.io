@@ -72,7 +72,7 @@ function draw() {
     }
     
     // Add bubbles if there is space for it
-    if (autoSpawn && bubbles.length < maxBubbles) {
+    if (autoSpawn && bubbles.length < maxBubbles && random() < 0.2) {
         var newBubble = new Bubble(random(width), random(height), random(minSize, maxSize));
         var doesNewBubbleTouch = false;
         for(var b of bubbles) {
@@ -89,7 +89,7 @@ function draw() {
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
     background(0);
-    maxBubbles = width * height / 6000 + 2;
+    maxBubbles = width * height / 5000 + 2;
 }
 
 function mousePressed() {
