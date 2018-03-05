@@ -10,7 +10,7 @@ var isBubbleClicked = false; // Store if a bubble was clicked
 var minSize = 5;
 var maxSize = 25;
 
-var pictureMode = true;
+var pictureMode = false;
 var pictureWidth = 1; // 1.77 for pictures from phone
 
 var autoSpawn = true;
