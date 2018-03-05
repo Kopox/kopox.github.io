@@ -36,8 +36,8 @@ function setup() {
     }*/
     
     // Indications
-    print("v1.0");
-    print("Hi! You can use "A", "P", "SPACE_BAR", and the mouse.");
+    print('v1.0');
+    print('Hi! You can use "A", "P", "SPACE_BAR", and the mouse.');
 }
 
 function draw() {
