@@ -20,7 +20,7 @@ let pictures = [];
 
 function preload() {
     if (pictureMode) {
-        for (let i = 0; i < 8; i++) {
+        for (let i = 0; i <= 9; i++) {
             pictures[i] = loadImage(`pictures/picture${i}.png`);
         }
     }
