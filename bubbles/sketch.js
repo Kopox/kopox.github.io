@@ -34,6 +34,9 @@ function setup() {
 /*    for (var i = 0; i < (width * height / 140000 + 2); i++) {
         bubbles[i] = new Bubble(random(width), random(height), random(minSize, maxSize));
     }*/
+    
+    // Indications
+    print("Hi! You can use "A", "P", "SPACE_BAR", and the mouse.");
 }
 
 function draw() {
@@ -70,7 +73,6 @@ function draw() {
     
     // Add bubbles if there is space for it
     if (autoSpawn && bubbles.length < (width * height / 3000 + 2)) {
-        print("width: " + width + ", height: " + height + ", area: " + (width*height) + ", bubbles: " + (width * height / 3000 + 2));
         var newBubble = new Bubble(random(width), random(height), random(minSize, maxSize));
         var doesNewBubbleTouch = false;
         for(var b of bubbles) {
