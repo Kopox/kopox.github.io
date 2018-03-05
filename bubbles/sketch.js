@@ -34,7 +34,7 @@ function setup() {
     
     // Indications
     print('v1.1');
-    print('Hi! You can use "A", "P", "SPACE_BAR", and the mouse.');
+    print('Hi! You can use "A", "P", "S", "SPACE_BAR", and the mouse.');
     
     // Create a population of bubbles
 /*    for (var i = 0; i < (width * height / 140000 + 2); i++) {
