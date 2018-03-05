@@ -10,7 +10,7 @@ var isBubbleClicked = false; // Store if a bubble was clicked
 var minSize = 5;
 var maxSize = 25;
 
-var pictureMode = false;
+var pictureMode = true;
 var pictureWidth = 1; // 1.77 for pictures from phone
 
 var autoSpawn = true;
@@ -36,6 +36,7 @@ function setup() {
     }*/
     
     // Indications
+    print("v1.0");
     print("Hi! You can use "A", "P", "SPACE_BAR", and the mouse.");
 }
 
