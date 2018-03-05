@@ -54,10 +54,10 @@ class Bubble {
     // Changes the color of the bubble
     changeColor() {
         if (pictureMode) {
-            this.pic = random(pictures);
+            //this.pic = random(pictures); // Activates to allow changing pictures
+            this.col = color(random(0, 255), random(0, 200), random(0, 255), 100);
         } else {
             this.col = color(random(0, 255), random(0, 200), random(0, 255), 100);
-
         }
     }
     
