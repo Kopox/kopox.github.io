@@ -17,6 +17,7 @@ var rightDownTime = 0;
 var downDownTime = 0;
 var minDownTime = 10;
 var hardDrop = false;
+var downPressed = false;
 
 var updateAllSpeed = 25;
 var time = 0;
@@ -30,7 +31,7 @@ var linesPerLevel = 10;
 // Ininitalization and declaration of the setInterval functions
 function setup() {
     // Print information
-    print("v1.0");
+    print("v1.1");
     print("Hi! You can use the ARROWS, SPACEBAR to pause, and ENTER at the end to start a new game.");
     
     // Create canvas and background
@@ -116,10 +117,11 @@ function updateAll() {
 function keyPressed() {
     if (keyCode === 32) { // Space bar
         pause = !pause;
+        downPressed = false; // To avoid bug of continuous down
     }
     if (keyCode === 13) { // Enter
         newGame();
-        end = !end;
+        end = false;
     } 
     if (keyCode === LEFT_ARROW) {
         leftDownTime = 0;
@@ -133,13 +135,14 @@ function keyPressed() {
         shapes[0].update();
     }
     if (keyCode === DOWN_ARROW) {
-        if (keyIsDown(16)) { // Shite + DOWN = hard drop
+        if (keyIsDown(16)) { // Shifte + DOWN = hard drop
             hardDrop = true;
             while(hardDrop && !end && !pause) {
                 updateAll();
             }
         } else {
             downDownTime = 0;
+            downPressed = true;
             updateAll();
         }
     }
@@ -160,9 +163,15 @@ function checkKeyDown() {
     }
     if (keyIsDown(DOWN_ARROW)) {
         downDownTime += 1;
-        if (downDownTime >= minDownTime) {
+        if (downDownTime >= minDownTime && downPressed) {
             updateAll();
         }
+    }
+}
+
+function keyReleased() {
+    if (keyCode === DOWN_ARROW) {
+        downPressed = false;  // To avoid bug of continuous down
     }
 }
 
