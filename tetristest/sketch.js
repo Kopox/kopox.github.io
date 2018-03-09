@@ -28,7 +28,13 @@ var bestScore = 0;
 var level = 1;
 var linesPerLevel = 10;
 
-var music;
+var song;
+var songVolume = 0;
+
+// Preload
+function preload() {
+    //song = loadSound('tetrisMusic.mp3');
+}
 
 // Ininitalization and declaration of the setInterval functions
 function setup() {
@@ -36,8 +42,8 @@ function setup() {
     print("v1.1");
     print("Hi! You can use the ARROWS, SPACEBAR to pause, and ENTER at the end to start a new game.");
     
-    // Load music
-    music = loadSound('tetrisMusic.mp3');
+    // Load sound
+    song = loadSound('tetrisMusic.mp3'); // will be in preload
     
     // Create canvas and background
     createCanvas(windowWidth, windowHeight, 0, 0);
@@ -66,6 +72,7 @@ function setup() {
 
 function draw() {
     drawBackground();
+    drawSoundButton();
     shapes[0].display();
     shapes[1].display();
     
@@ -90,6 +97,26 @@ function drawBackground() {
             ellipse(gridX + reso*i, gridY + reso*j, reso - gap, reso - gap);
         }
     }
+}
+
+function drawSoundButton() {
+    stroke(gridColor[0], gridColor[1], gridColor[2], gridColor[3]);
+    strokeWeight(4);
+    noFill();
+    
+    ellipse(reso, reso, reso, reso);
+    
+    if (songVolume >= 1) {
+        arc(reso*0.6, reso, reso*0.45, reso*0.45, - 0.1*PI, 0.1*PI);
+    }    
+    if (songVolume >= 2) {
+        arc(reso*0.6, reso, reso*0.8, reso*0.8, - 0.15*PI, 0.15*PI);
+    }    
+    if (songVolume >= 3) {
+        arc(reso*0.6, reso, reso*1.15, reso*1.15, - 0.18*PI, 0.18*PI);
+    }
+    
+    noStroke();
 }
 
 function checkUpdateAll() {
@@ -181,10 +208,18 @@ function keyReleased() {
 }
 
 function mousePressed() {
-    if (music.isPlaying) {
-        music.stop();
-    } else {
-        music.play();
+    // Edit the volume of the song
+    var dX = mouseX - reso;
+    var dY = mouseY - reso;
+    var d = sqrt(dX*dX + dY*dY);
+        
+    if (d < reso/2) {
+        if (songVolume >= 3) {
+            songVolume = 0;
+        } else {
+            songVolume += 1;
+        }
+        song.setVolume(songVolume/3);
     }
 }
 
