@@ -1,7 +1,3 @@
-/* To do
-    shit + down = direct to the bottom
-*/
-
 var tetrominoList = ["I", "O", "T", "S", "Z", "J", "L"];
 var shapes = [];
 var pause = false;
@@ -34,7 +30,7 @@ var linesPerLevel = 10;
 // Ininitalization and declaration of the setInterval functions
 function setup() {
     // Print information
-    print("v0.7");
+    print("v1.0");
     print("Hi! You can use the ARROWS, SPACEBAR to pause, and ENTER at the end to start a new game.");
     
     // Create canvas and background
