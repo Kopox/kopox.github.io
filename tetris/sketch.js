@@ -31,7 +31,7 @@ var linesPerLevel = 10;
 // Ininitalization and declaration of the setInterval functions
 function setup() {
     // Print information
-    print("v1.1");
+    print("v1.11");
     print("Hi! You can use the ARROWS, SPACEBAR to pause, and ENTER at the end to start a new game.");
     
     // Create canvas and background
@@ -134,7 +134,7 @@ function keyPressed() {
     if (keyCode === UP_ARROW) {
         shapes[0].update();
     }
-    if (keyCode === DOWN_ARROW) {
+    if (keyCode === DOWN_ARROW || keyCode === 87) { // KeyCode 87 is "W"
         if (keyIsDown(16)) { // Shifte + DOWN = hard drop
             hardDrop = true;
             while(hardDrop && !end && !pause) {
