@@ -31,7 +31,7 @@ var linesPerLevel = 10;
 // Ininitalization and declaration of the setInterval functions
 function setup() {
     // Print information
-    print("v1.11");
+    print("v1.12");
     print("Hi! You can use the ARROWS, SPACEBAR to pause, and ENTER at the end to start a new game.");
     
     // Create canvas and background
@@ -161,7 +161,7 @@ function checkKeyDown() {
             shapes[0].collisionRight();
         }
     }
-    if (keyIsDown(DOWN_ARROW)) {
+    if (keyIsDown(DOWN_ARROW) || keyIsDown(87)) { // 87 is "W"
         downDownTime += 1;
         if (downDownTime >= minDownTime && downPressed) {
             updateAll();
