@@ -103,6 +103,7 @@ function updateAll() {
         // If there is a collision down, write the shape in grid[] and make a new shape
         if (shapes[0].collisionDown()) {
             shapes[0].endShape(); // Add the shape to the grid
+            downPressed = false; // Next piece will begin by falling slowly
             checkLines(); // Check if the newly added shape closes a line
             nextShapes(); // Update current & next shapes
             checkEnd(); // End the game if the new shape already has a collision
