@@ -55,6 +55,7 @@ class Shape {
         
         if (this.collision()) {
             this.x += 1;
+            leftPressed = false; // To avoid bug keeping left/right pressed
         }
     }
     
@@ -64,6 +65,7 @@ class Shape {
         
         if (this.collision()) {
             this.x -= 1;
+            rightPressed = false; // To avoid bug keeping left/right pressed
         }
     }
     

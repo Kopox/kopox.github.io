@@ -17,6 +17,8 @@ var rightDownTime = 0;
 var downDownTime = 0;
 var minDownTime = 10;
 var hardDrop = false;
+var leftPressed = false;
+var rightPressed = false;
 var downPressed = false;
 
 var updateAllSpeed = 25;
@@ -125,10 +127,14 @@ function keyPressed() {
         end = false;
     } 
     if (keyCode === LEFT_ARROW) {
+        rightPressed = false; // To avoid bug keeping left/right pressed
+        leftPressed = true
         leftDownTime = 0;
         shapes[0].collisionLeft();
     } 
     if (keyCode === RIGHT_ARROW) {
+        leftPressed = false; // To avoid bug keeping left/right pressed
+        rightPressed = true;
         rightDownTime = 0;
         shapes[0].collisionRight();
     }
@@ -150,13 +156,13 @@ function keyPressed() {
 }
 
 function checkKeyDown() {
-    if (keyIsDown(LEFT_ARROW)) {
+    if (keyIsDown(LEFT_ARROW) && leftPressed === true) {
         leftDownTime += 1;
         if (leftDownTime >= minDownTime) {
             shapes[0].collisionLeft();
         }
     } 
-    if (keyIsDown(RIGHT_ARROW)) {
+    if (keyIsDown(RIGHT_ARROW) && rightPressed === true) {
         rightDownTime += 1;
         if (rightDownTime >= minDownTime) {
             shapes[0].collisionRight();
