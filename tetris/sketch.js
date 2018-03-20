@@ -68,7 +68,7 @@ function draw() {
     
     if (pause) {
         fill(255);
-        text("PAUSE", gridX - reso/2, gridY - 1.5*reso);
+        text("PAUSE", gridX - 6*reso, scoreY);
     }
 }
 
