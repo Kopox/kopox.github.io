@@ -33,7 +33,7 @@ var linesPerLevel = 10;
 // Ininitalization and declaration of the setInterval functions
 function setup() {
     // Print information
-    print("v1.12");
+    print("v1.13");
     print("Hi! You can use the ARROWS, SPACEBAR to pause, and ENTER at the end to start a new game.");
     
     // Create canvas and background
@@ -126,52 +126,57 @@ function keyPressed() {
         newGame();
         end = false;
     } 
-    if (keyCode === LEFT_ARROW) {
-        rightPressed = false; // To avoid bug keeping left/right pressed
-        leftPressed = true
-        leftDownTime = 0;
-        shapes[0].collisionLeft();
-    } 
-    if (keyCode === RIGHT_ARROW) {
-        leftPressed = false; // To avoid bug keeping left/right pressed
-        rightPressed = true;
-        rightDownTime = 0;
-        shapes[0].collisionRight();
-    }
-    if (keyCode === UP_ARROW) {
-        shapes[0].update();
-    }
-    if (keyCode === DOWN_ARROW || keyCode === 87) { // KeyCode 87 is "W"
-        if (keyIsDown(16)) { // Shifte + DOWN = hard drop
-            hardDrop = true;
-            while(hardDrop && !end && !pause) {
+    
+    if (!pause) {
+        if (keyCode === LEFT_ARROW) {
+            rightPressed = false; // To avoid bug keeping left/right pressed
+            leftPressed = true
+            leftDownTime = 0;
+            shapes[0].collisionLeft();
+        } 
+        if (keyCode === RIGHT_ARROW) {
+            leftPressed = false; // To avoid bug keeping left/right pressed
+            rightPressed = true;
+            rightDownTime = 0;
+            shapes[0].collisionRight();
+        }
+        if (keyCode === UP_ARROW) {
+            shapes[0].update();
+        }
+        if (keyCode === DOWN_ARROW || keyCode === 87) { // KeyCode 87 is "W"
+            if (keyIsDown(16)) { // Shifte + DOWN = hard drop
+                hardDrop = true;
+                while(hardDrop && !end && !pause) {
+                    updateAll();
+                }
+            } else {
+                downDownTime = 0;
+                downPressed = true;
                 updateAll();
             }
-        } else {
-            downDownTime = 0;
-            downPressed = true;
-            updateAll();
         }
     }
 }
 
 function checkKeyDown() {
-    if (keyIsDown(LEFT_ARROW) && leftPressed === true) {
-        leftDownTime += 1;
-        if (leftDownTime >= minDownTime) {
-            shapes[0].collisionLeft();
+    if (!pause) {
+        if (keyIsDown(LEFT_ARROW) && leftPressed === true) {
+            leftDownTime += 1;
+            if (leftDownTime >= minDownTime) {
+                shapes[0].collisionLeft();
+            }
+        } 
+        if (keyIsDown(RIGHT_ARROW) && rightPressed === true) {
+            rightDownTime += 1;
+            if (rightDownTime >= minDownTime) {
+                shapes[0].collisionRight();
+            }
         }
-    } 
-    if (keyIsDown(RIGHT_ARROW) && rightPressed === true) {
-        rightDownTime += 1;
-        if (rightDownTime >= minDownTime) {
-            shapes[0].collisionRight();
-        }
-    }
-    if (keyIsDown(DOWN_ARROW) || keyIsDown(87)) { // 87 is "W"
-        downDownTime += 1;
-        if (downDownTime >= minDownTime && downPressed) {
-            updateAll();
+        if (keyIsDown(DOWN_ARROW) || keyIsDown(87)) { // 87 is "W"
+            downDownTime += 1;
+            if (downDownTime >= minDownTime && downPressed) {
+                updateAll();
+            }
         }
     }
 }
