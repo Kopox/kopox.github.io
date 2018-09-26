@@ -1,157 +1,82 @@
-var bubbles = []; // Array of all the bubbles elements
+let bubbles = []; // Array strogin the bubble objects
+let maxBubbles = 100; // Bubbles stop spawning automatically if the maximum is reached
+let pics = []; // Array storing the pictures
+let lastPic = 11;
+let picsLoaded = 0;
+let emptyArr = [];
 
-var bSpeed = 2; // Determines how far bubbles move each frame
-
-var accMode = false;
-var bAcc = 2; // Determines the acceleration
-
-var isBubbleClicked = false; // Store if a bubble was clicked
-
-var minSize = 5;
-var maxSize = 25;
-
-var pictureMode = true;
-var pictureWidth = 1; // 1.77 for pictures from phone
-
-var autoSpawn = true;
-var maxBubbles = 15;
-
-let pictures = [];
-
+// PRELOAD FUNCTION ------------------------------------------------------------
 function preload() {
-    if (pictureMode) {
-        for (let i = 0; i <= 9; i++) {
-            pictures[i] = loadImage(`pictures/picture${i}.png`);
-        }
-    }
+
 }
 
+// SETUP FUNCTION ------------------------------------------------------------
 function setup() {
-    // Initialize the screen
-    createCanvas(windowWidth, windowHeight, 0, 0);
-    background(0);
-    maxBubbles = width * height / 3000 + 2;
+    createCanvas(windowWidth, windowHeight);
+    calcMaxBubbles();
     
-    // Indications
-    print('v1.1');
-    print('Hi! You can use "A", "P", "S", "SPACE_BAR", and the mouse.');
-    
-    // Create a population of bubbles
-/*    for (var i = 0; i < (width * height / 140000 + 2); i++) {
-        bubbles[i] = new Bubble(random(width), random(height), random(minSize, maxSize));
-    }*/
+    // Load the pictures
+    for (let i = 0; i <= lastPic; i++) {
+        pics[i] = loadImage("pictures/picture" + i + ".png", () => picsLoaded++);
+    }
 }
 
+// DRAW FUNCTION ------------------------------------------------------------
 function draw() {
-    background(0, 0, 0, 20);
+    background(0);
     
-    // Let all the bubbles move and appear on screen
-    for (var b of bubbles) {
-        b.move();
-        b.display();
-    }
+    // Update the position of the bubbles
+    bubbles.forEach(b => b.update());
+    bubbles.forEach(b => b.show());
     
-    // Checks collision with between bubbles and delete oldest
-    for (var i = bubbles.length-1; i >= 0; i--) {
-        if (bubbles[i].pop) {
-            bubbles.splice(i, 1);
-            break;
-        }
-        for (var j = i-1; j >= 0; j--) {
-            if (bubbles[i].intersects(bubbles[j])) {
-                if (bubbles[i].d > bubbles[j].d) {
-                    bubbles[i].d = sqrt((bubbles[i].d*bubbles[i].d) + (bubbles[j].d*bubbles[j].d));
-                    bubbles.splice(j, 1);
-                } else {
-                    bubbles[j].d = sqrt((bubbles[i].d*bubbles[i].d) + (bubbles[j].d*bubbles[j].d));
-                    bubbles.splice(i, 1);  
+    // Check if the bubbles go out of the window or intersect
+    bubbles.forEach(b => b.edge());
+    for (let i = 0; i < bubbles.length; i++) {
+        if (!bubbles[i].eaten) {
+            for (let j = i + 1; j < bubbles.length; j++) {
+                if (bubbles[i].intersect(bubbles[j])) {
+                    bubbles[i].r > bubbles[j].r ? bubbles[i].eat(bubbles[j]) : bubbles[j].eat(bubbles[i]);
                 }
-                break;
             }
         }
+    }
+
+    // Delete eaten bubbles
+    for (let i = bubbles.length - 1; i >= 0; i--) {
+        if (bubbles[i].eaten) bubbles.splice(i, 1);
     }
     
-    // Add bubbles if there is space for it
-    if (autoSpawn && bubbles.length < maxBubbles && random() < 0.2) {
-        var newBubble = new Bubble(random(width), random(height), random(minSize, maxSize));
-        var doesNewBubbleTouch = false;
-        for(var b of bubbles) {
-            if(newBubble.intersects(b)) {
-                doesNewBubbleTouch = true;
-            }
-        }
-        if (!doesNewBubbleTouch) {
-            bubbles[bubbles.length] = newBubble;
-        }
-    }
+    // Add a new bubble if the amount is inferior to the maximum
+    if (bubbles.length < maxBubbles) addBubble();
 }
 
+// OTHER FUNCTIONS ------------------------------------------------------------
+// Add a bubble if the location generated is free
+function addBubble() {
+    let x = random(width);
+    let y = random(height);
+    let b = new Bubble(x, y, random(pics));
+    let free = true; // b does not intersect another bubble
+
+    for (i = 0; i < bubbles.length; i++) {
+        if (b.intersect(bubbles[i])) free = false;
+    }
+
+    if (free && !b.edge()) bubbles.push(b);
+}
+
+// Add more bubbles by dragging the mouse
+function mouseDragged() {
+    bubbles.push(new Bubble(mouseX, mouseY, random(pics)));
+}
+
+// Resize the canvas and update the max bubbles upon window resize
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
-    background(0);
-    maxBubbles = width * height / 3000 + 2;
+    calcMaxBubbles();
 }
 
-function mousePressed() {
-    drawThings();
-}
-
-function mouseDragged() {
-    drawThings();
-}
-
-function keyPressed() {
-    var modePressed = '';
-    var onOff = 'On';
-    
-    if (key === "A") {
-        accMode = !accMode;
-        modePressed = 'Acceleration mode';
-        if (!accMode) {
-            onOff = 'OFF';
-        }
-    } else if (key === "P") {
-        pictureMode = !pictureMode;
-        modePressed = 'Picture mode';
-        if (!pictureMode) {
-            onOff = 'OFF';
-        }
-    } else if (key === "S") {
-        autoSpawn = !autoSpawn;
-        modePressed = 'Auto-spawn';
-        if (!autoSpawn) {
-            onOff = 'OFF';
-        }
-    } else if (keyCode === 32) {
-        background(0);
-        bubbles.splice(0, bubbles.length);
-    }
-    
-    // Write a message to indicate what happened upon key pressed
-    if (modePressed != '') {
-        textSize(32);
-        fill(255);
-        text(modePressed + ': ' + onOff, 20, 40);
-    }
-}
-
-function drawThings() {
-    isBubbleClicked = false;
-    
-    // Check clicked function of every bubble
-    for (var i = bubbles.length-1; i >= 0 ; i--) {
-        if (bubbles[i].clicked(mouseX, mouseY)) {
-            isBubbleClicked = true; // Remember that at least 1 bubble was under the click
-            if (random() < 0.1) {
-                bubbles.splice(i, 1); // Random chance to pop the bubble
-            } else {
-                bubbles[i].changeColor(); // If clicked and not popped, change the color of the bubble
-            }
-        }
-    }
-    
-    // If no bubble was under the click, create a new bubble at this position
-    if (!isBubbleClicked) {
-        bubbles[bubbles.length] = new Bubble(mouseX, mouseY, random(minSize, maxSize));
-    }
+// Determines the target amount of bubbles
+function calcMaxBubbles() {
+    maxBubbles = width * height / 2000 + 2
 }

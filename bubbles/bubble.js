@@ -1,68 +1,74 @@
 class Bubble {
-    // Build a bubble
-    constructor(x, y, d) {
-        this.x = x; // x position
-        this.y = y; // y position
-        this.xv = 0;
-        this.yv = 0;
-        this.xa = 0;
-        this.ya = 0;
-        this.d = d; // diameter
-        this.col = color(random(0, 255), random(0, 200), random(0, 255), 100); // color
-        this.pic = random(pictures);
-        this.pop = false;
-    }
-
-    // Draws the bubble on the screen
-    display() {
-        if (pictureMode) {
-            image(this.pic, this.x-this.d/2*pictureWidth, this.y-this.d/2, this.d*pictureWidth, this.d);  
+    constructor(x, y, pic) {
+        this.maxTrail = 1; // No trail at the moment
+        this.trail = new Array(this.maxTrail);
+        this.trail.fill(createVector(x, y));
+        
+        this.pic = pic;
+        
+        this.rgb = [floor(random(100, 255)), floor(random(100, 255)), floor(random(100, 255))]
+        this.alpha = [];
+        this.alpha[0] = 110;
+        for (let i = 1; i < this.trail.length; i++) {
+            this.alpha[i] = map(i, 1, this.trail.length, 25, 10);
         }
-        stroke(255, 255, 255, 255);
-        strokeWeight(0.6)
-        fill(this.col);
-        ellipse(this.x, this.y, this.d, this.d);           
+        
+        this.eaten = false;
+        this.r = floor(random(2, 10));
+        this.d = this.r * 2;
+        this.area = PI * this.r * this.r;
     }
     
-    // Update the position of the bubble
-    move() {
-        if (accMode) {
-            this.xa = random(-bAcc, bAcc);
-            this.ya = random(-bAcc, bAcc);
-            this.xv += this.xa;
-            this.yv += this.ya;
-            this.x += this.xv/this.d;
-            this.y += this.yv/this.d;
-        } else {
-            this.xv = random(-bSpeed, +bSpeed);
-            this.yv = random(-bSpeed, +bSpeed);
-            this.x += this.xv;
-            this.y += this.yv;
+    update() {
+        for (let i = this.trail.length - 1; i >= 1; i--) {
+            this.trail[i] = this.trail[i+-1].copy();
         }
-        if (this.x-this.d/2 <= 0 || this.y-this.d/2 <= 0 ||
-           this.x+this.d/2 >= width || this.y+this.d/2 >= height) {
-            this.pop = true;
-        }
+        
+        this.trail[0].add(p5.Vector.random2D()); //.mult() in case we need larger steps
     }
     
-    // Checks if the bubble is clicked
-    clicked(cx, cy) {
-        var z = dist(cx, cy, this.x, this.y);
-        return (z < (this.d/2+2));
+    show() {
+        strokeWeight(1);
+        for (let i = this.trail.length - 1; i >= 1; i--) {
+            stroke(255, this.alpha[i]);
+            fill(this.rgb[0], this.rgb[1], this.rgb[2], this.alpha[i]);
+            ellipse(this.trail[i].x, this.trail[i].y, this.d, this.d)
+        }
+        
+        if (this.pic) {
+            imageMode(CENTER);
+            image(this.pic, this.trail[0].x, this.trail[0].y, this.d - 2, this.d - 2)
+        }
+        
+        stroke(255, this.alpha[0]);
+        fill(this.rgb[0], this.rgb[1], this.rgb[2], this.alpha[0])
+        ellipse(this.trail[0].x, this.trail[0].y, this.d, this.d)
     }
     
-    // Changes the color of the bubble
-    changeColor() {
-        if (pictureMode) {
-            //this.pic = random(pictures); // Activates to allow changing pictures
-            this.col = color(random(0, 255), random(0, 200), random(0, 255), 100);
-        } else {
-            this.col = color(random(0, 255), random(0, 200), random(0, 255), 100);
+    edge() {
+        if (this.trail[0].x - this.r < 0 || this.trail[0].x + this.r > width ||
+            this.trail[0].y - this.r < 0 || this.trail[0].y + this.r > height) {
+                this.eaten = true;
+                return true;
         }
     }
     
-    // Returns true if this bubble intesects the argument bubble
-    intersects(other) {
-        return dist(this.x, this.y, other.x, other.y) < (this.d + other.d)/2;
+    intersect(other) {
+        let rTot = this.r + other.r;
+        let dx = abs(this.trail[0].x - other.trail[0].x);
+        if (dx > rTot) return false;
+        let dy = abs(this.trail[0].y - other.trail[0].y);
+        if (dy > rTot) return false;
+        
+        let dSqr = dx * dx + dy * dy;
+        if (dSqr < rTot * rTot) return true;
+        return false;
+    }
+    
+    eat(other) {
+        this.area += other.area;
+        this.r = sqrt(this.area / PI);
+        this.d = 2 * this.r;
+        other.eaten = true;
     }
 }
