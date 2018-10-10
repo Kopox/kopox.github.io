@@ -1,6 +1,6 @@
 
 /*
-    TETRIS v1.1
+    TETRIS
     This project was made from scratch for Laure, who likes Tetris but don't like
     the visual pollution present when playing Tetris on random websites.
     It was made using p5.js, giving a "setup" function executing at the beginning and "draw" function executing each frame,
@@ -41,7 +41,7 @@ var linesPerLevel = 10; // Amount of lines to complete before going to the next 
 // Ininitalization and declaration of the setInterval functions for the game to run
 function setup() {
     // Print information
-    print("v1.13");
+    print("v1.14");
     print("Hi! You can use the ARROWS, SPACEBAR to pause, and ENTER at the end to start a new game.");
     
     // Create canvas and background
