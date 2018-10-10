@@ -1,10 +1,10 @@
 
 /*
-    TETRIS
+    TETRIS v1.1
     This project was made from scratch for Laure, who likes Tetris but don't like
     the visual pollution present when playing Tetris on random websites.
     It was made using p5.js, giving a "setup" function executing at the beginning and "draw" function executing each frame,
-    as well as mathematical and drawing tools such as the "min" and "ellipse" functions.
+    as well as mathematical tools (e.g. "min"), drawing tools (e.g. "ellipse"), and events (e.g. "keyPressed") among others.
 */
 var tetrominoList = ["I", "O", "T", "S", "Z", "J", "L"]; // Tetrominos are Tetris pieces that are falling
 var shapes = []; // Array storing the shapes to be displayed on screen
@@ -47,14 +47,14 @@ function setup() {
     // Create canvas and background
     createCanvas(windowWidth, windowHeight, 0, 0);
     background(0);
-    
+    windowResize(); // Scale the graphic elements (reso, gap, textSize, gridX & gridY, scoreX & scoreY)
     // Update the resolution and gap depending on the size of the window
-    reso = min(floor(windowWidth/gridCol*0.4), floor(windowHeight/gridRow*0.9));
-    gap = reso/15;
+    //reso = min(floor(windowWidth/gridCol*0.4), floor(windowHeight/gridRow*0.9));
+    //gap = reso/15;
     
     // Update x and y positions of the grid depending on the size of the window
-    gridX = floor(windowWidth/2 - gridCol*reso/2);
-    gridY = floor(windowHeight/2 - gridRow*reso/2) + reso/2;
+    //gridX = floor(windowWidth/2 - gridCol*reso/2);
+    //gridY = floor(windowHeight/2 - gridRow*reso/2) + reso/2;
     
     // Create the grid and the first shapes, initizalize the positions
     newGrid(); // "grid" becomes a two-dimentional array "gridCol" (10) * "gridRow" (20), initilized at color "gridCol"
@@ -63,9 +63,9 @@ function setup() {
     
     // Chose the font, update the text size and position depending on the size of the window
     textFont("Helvetica");
-    textSize(reso);
-    scoreX = gridX + 11.68*reso;
-    scoreY = gridY + reso;
+    //textSize(reso);
+    //scoreX = gridX + 11.68*reso;
+    //scoreY = gridY + reso;
     
     // SetInterval of the function checkUpdateAll managing the game
     // Each "updateAllSpeed" (25) ms, checks if the game must be updated depending on the speed of the level
@@ -179,54 +179,62 @@ function keyPressed() {
         if (keyCode === DOWN_ARROW) {
             if (keyIsDown(16)) { // keyCode 16 is SHIFT. SHIFT + DOWN results in a hard drop
                 hardDrop = true; // Informs that a hard drop must be performed
-                while(hardDrop && !end && !pause) {
-                    updateAll(); // Updates the state of the game until the tetromino##############################
+                while(hardDrop && !end && !pause) { // "hardDrop" == false when the tetromino lands (collision when going down)
+                    updateAll(); // Updates the state of the game (i.e. go down) until the tetromino lands
                 }
             } else {
-                downDownTime = 0;
-                downPressed = true;
-                updateAll();
+                downPressed = true; // Informs that the RIGHT key is pressed
+                downDownTime = 0; // Resets the time RIGHT key is pressed
+                updateAll(); // Going down is equivalent to updating the game 1 frame of animation forward.
             }
         }
     }
 }
 
+// Manages the user holding the directional arrows for fast movement of the tetromino
 function checkKeyDown() {
     if (!pause) {
-        if (keyIsDown(LEFT_ARROW) && leftPressed === true) {
-            leftDownTime += 1;
-            if (leftDownTime >= minDownTime) {
-                shapes[0].collisionLeft();
+        if (keyIsDown(LEFT_ARROW) && leftPressed === true) { // Double check to avoid a bug
+            leftDownTime += 1; // Increment the amount of time the LEFT key is pressed
+            if (leftDownTime >= minDownTime) { // If the key is held long enough
+                shapes[0].collisionLeft(); // Move the tetromino to the left. It moves continuously until the key is released
             }
         } 
-        if (keyIsDown(RIGHT_ARROW) && rightPressed === true) {
-            rightDownTime += 1;
-            if (rightDownTime >= minDownTime) {
-                shapes[0].collisionRight();
+        if (keyIsDown(RIGHT_ARROW) && rightPressed === true) { // Double check to avoid a bug
+            rightDownTime += 1; // Increment the amount of time the RIGHT key is pressed
+            if (rightDownTime >= minDownTime) { // If the key is held long enough
+                shapes[0].collisionRight(); // Move the tetromino to the right. It moves continuously until the key is released
             }
         }
-        if (keyIsDown(DOWN_ARROW) || keyIsDown(87)) { // 87 is "W"
-            downDownTime += 1;
-            if (downDownTime >= minDownTime && downPressed) {
-                updateAll();
+        if (keyIsDown(DOWN_ARROW)) {
+            downDownTime += 1; // Increment the amount of time the DOWN key is pressed
+            if (downDownTime >= minDownTime && downPressed) { // If the key is held long enough
+                updateAll(); // Move the tetromino down. It moves continuously until the key is released
             }
         }
     }
 }
 
+// Function added to avoid a bug where the tetromino continues to go down
+// despite the DOWN key being released
 function keyReleased() {
     if (keyCode === DOWN_ARROW) {
         downPressed = false;  // To avoid bug of continuous down
     }
 }
 
-// Resize the canvas if the window is resized
+// Resizes the canvas and the graphic elements if the window is resized
 function windowResized() {
+    // Update the resolution and gap depending on the size of the window
     resizeCanvas(windowWidth, windowHeight);
     reso = min(floor(windowWidth/gridCol*0.4), floor(windowHeight/gridRow*0.9));
     gap = reso/15;
+    
+    // Update x and y positions of the grid depending on the size of the window
     gridX = floor(windowWidth/2 - gridCol*reso/2);
     gridY = floor(windowHeight/2 - gridRow*reso/2) + reso/2;
+
+    // Chose the font, update the text size and position depending on the size of the window
     textSize(reso);
     scoreX = gridX + 11.68*reso;
     scoreY = gridY + reso;
