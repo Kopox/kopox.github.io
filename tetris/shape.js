@@ -1,6 +1,7 @@
 class Shape {
     // Builds a shape
     constructor(x, y) {
+        print("Shape creation begin");
         this.x = x; // x position
         this.y = y; // y position
         this.color = [floor(random(150, 255)), floor(random(150, 255)), floor(random(150, 255)), 255]; // color
@@ -18,6 +19,7 @@ class Shape {
         
         // Initialize the shape of the tetromino
         this.update();
+        print("Shape creation end");
     }
     
     // Displays the shape
