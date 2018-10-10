@@ -17,6 +17,8 @@ var gridCol = 10;
 var gridRow = 20;
 var gridX = 100; // Initial x position of the grid, later adapted to the screen size
 var gridY = 100; // Initial y position of the grid, later adapted to the screen size
+var scoreX = 200; // Initial x position of the score text, later adapted to the screen size
+var scoreY = 100; // Initial x position of the score text, later adapted to the screen size
 var reso = 30; // Resolution of the game, i.e. width & height of a position in the grid, later adapted to the screen size
 var gap = 2; // Cirles in the gris have a diameter of (reso - gap) to space them
 
