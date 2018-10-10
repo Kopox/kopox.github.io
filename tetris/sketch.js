@@ -225,6 +225,7 @@ function keyReleased() {
 
 // Resizes the canvas and the graphic elements if the window is resized
 function windowResized() {
+    print("the window is resized");
     // Update the resolution and gap depending on the size of the window
     resizeCanvas(windowWidth, windowHeight);
     reso = min(floor(windowWidth/gridCol*0.4), floor(windowHeight/gridRow*0.9));
@@ -281,13 +282,11 @@ function checkLines() {
         //}
     }
 
-    // Add lines completed and eventually update the level
+    // Add the number of lines closed to "linesCompleted", to be displayed on screen, and eventually update the level
     linesCompleted += linesClosed.length;
-    if (linesCompleted > linesPerLevel * level) {
-        level += 1;
-    }
+    if (linesCompleted > linesPerLevel * level) level += 1;
     
-    // Add score depending on lines closed
+    // Add score depending on the number of lines closed
     switch (linesClosed.length) {
         case 1:
             score += 40 * level;
@@ -304,10 +303,11 @@ function checkLines() {
     
     // Remove the lines that were closed
     for (var i = linesClosed.length - 1; i >= 0; i--) {
-        // Translate the lines higher that the line closed
+        // The lines that were higher that the line closed fall 1 position downward
+        // We begin by the bottom-most line, which is the one with the highest index
         for (var j = linesClosed[i] + (linesClosed.length - 1 - i); j >= 1; j--) { // Lines from lineClosed[i]
             for (var k = 0; k < gridCol; k++) {
-                grid[k][j] = grid[k][j-1];
+                grid[k][j] = grid[k][j-1]; // Each position in "grid" takes the color of the position just on top
             }
         }
         // Add a new empty line at the top
@@ -317,17 +317,17 @@ function checkLines() {
     }
 }
 
-// Update current & next shapes
+// Removes the tetromino that just landed from the "shapes" array and generate a new one for the next time
 function nextShapes() {
-    shapes.splice(0, 1);
-    shapes[0].x = 3;
+    shapes.splice(0, 1); // Removes the tetromino that just landed
+    shapes[0].x = 3; // Set the position of the formerly "next tetromino" at the beginning position, on top of the grid
     shapes[0].y = -2;
-    shapes[1] = new Shape(12, 6);
-    downDownTime = 0; // Refresh keyDown timer of DOWN_ARROW
+    shapes[1] = new Shape(12, 6); // Creates a new "next tetrmomino" at the right of the grid
+    downDownTime = 0; // To avoid a bug where the tetromino continued going down fast despite the DOWN key being released
     hardDrop = false;
 }
 
-// End if the new shape already has a collision
+// End if a tetromino already has a collision at its beginning position
 function checkEnd() {
     if (shapes[0].collision()) {
         print("The End! Press ENTER to start a new game");
@@ -337,7 +337,7 @@ function checkEnd() {
 
 // Refresh the grid & score, begin a new game
 function newGame() {
-    newGrid();
+    newGrid(); // "grid" becomes a two-dimentional array "gridCol" (10) * "gridRow" (20), initilized at color "gridCol"
     shapes.splice(0, 1);
     shapes[0] = new Shape(3, -2);
     shapes[1] = new Shape(12, 6);
