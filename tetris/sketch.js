@@ -1,36 +1,44 @@
-var tetrominoList = ["I", "O", "T", "S", "Z", "J", "L"];
-var shapes = [];
-var pause = false;
-var end = false;
 
-var grid = [];
-var gridColor = [50, 50, 50, 255];
+/*
+    TETRIS
+    This project was made from scratch for Laure, who likes Tetris but don't like
+    the visual pollution present when playing Tetris on random websites.
+    It was made using p5.js, giving a "setup" function executing at the beginning and "draw" function executing each frame,
+    as well as mathematical and drawing tools such as the "min" and "ellipse" functions.
+*/
+var tetrominoList = ["I", "O", "T", "S", "Z", "J", "L"]; // Tetrominos are Tetris pieces that are falling
+var shapes = []; // Array storing the shapes to be displayed on screen
+var pause = false; // Game pauses when true
+var end = false; // Game freeze when true, until ENTER is pressed
+
+var grid = []; // Two-dimensional array storing the color (as an array [red, green, blue]) of each position of the playing grid
+var gridColor = [50, 50, 50, 255]; // Color of a position when there is no tetromino [red, green, blue, alpha]
 var gridCol = 10;
 var gridRow = 20;
-var gridX = 100;
-var gridY = 100;
-var reso = 30;
-var gap = 2;
+var gridX = 100; // Initial x position of the grid, later adapted to the screen size
+var gridY = 100; // Initial y position of the grid, later adapted to the screen size
+var reso = 30; // Resolution of the game, i.e. width & height of a position in the grid, later adapted to the screen size
+var gap = 2; // Cirles in the gris have a diameter of (reso - gap) to space them
 
-var leftDownTime = 0;
-var rightDownTime = 0;
-var downDownTime = 0;
-var minDownTime = 10;
-var hardDrop = false;
-var leftPressed = false;
-var rightPressed = false;
-var downPressed = false;
+var leftDownTime = 0; // Time since LEFT key is pressed, tetromino speed increases after some time
+var rightDownTime = 0; // Time since RIGHT key is pressed, tetromino speed increases after some time
+var downDownTime = 0; // Time since DOWN key is pressed, tetromino speed increases after some time
+var minDownTime = 10; // Time after which the tetromino speed (left, right, or down) is increased
+var hardDrop = false; // When true, a hard drop is performed (tetromino goes to the bottom)
+var leftPressed = false; // Left key is pressed, additional boolean used to solve bug
+var rightPressed = false; // Right key is pressed, additional boolean used to solve bug
+var downPressed = false; // Down key is pressed, additional boolean used to solve bug
 
-var updateAllSpeed = 25;
-var time = 0;
-var updateTime = 0;
-var linesCompleted = 0;
-var score = 0;
-var bestScore = 0;
-var level = 1;
-var linesPerLevel = 10;
+var updateAllSpeed = 25; // Minimum amount of ms between two frames of animation (game updated)
+var time = 0; // Timer of the game
+var updateTime = 0; // Used to count the time since the game was last updated
+var linesCompleted = 0; // Total amount of lines completed
+var score = 0; // Score based on the level and lines completed
+var bestScore = 0; // Best score for this session
+var level = 1; // Initial level = 1, increasing level => increasing speed
+var linesPerLevel = 10; // Amount of lines to complete before going to the next level
 
-// Ininitalization and declaration of the setInterval functions
+// Ininitalization and declaration of the setInterval functions for the game to run
 function setup() {
     // Print information
     print("v1.13");
@@ -40,77 +48,100 @@ function setup() {
     createCanvas(windowWidth, windowHeight, 0, 0);
     background(0);
     
-    // Create the grid and the first shapes, initizalize the positions
+    // Update the resolution and gap depending on the size of the window
     reso = min(floor(windowWidth/gridCol*0.4), floor(windowHeight/gridRow*0.9));
     gap = reso/15;
     
+    // Update x and y positions of the grid depending on the size of the window
     gridX = floor(windowWidth/2 - gridCol*reso/2);
     gridY = floor(windowHeight/2 - gridRow*reso/2) + reso/2;
-    newGrid();
     
-    shapes[0] = new Shape(3, -2);
+    // Create the grid and the first shapes, initizalize the positions
+    newGrid(); // "grid" becomes a two-dimentional array "gridCol" (10) * "gridRow" (20), initilized at color "gridCol"
+    shapes[0] = new Shape(3, -2); // Each tetromino is a "Shape" object, described in shape.js
     shapes[1] = new Shape(12, 6);
     
+    // Chose the font, update the text size and position depending on the size of the window
     textFont("Helvetica");
     textSize(reso);
     scoreX = gridX + 11.68*reso;
     scoreY = gridY + reso;
     
-    // SetInterval
+    // SetInterval of the function checkUpdateAll managing the game
+    // Each "updateAllSpeed" (25) ms, checks if the game must be updated depending on the speed of the level
     setInterval(checkUpdateAll, updateAllSpeed);
+    
+    // Counts the time a key (e.g. RIGHT) is pressed
     setInterval(checkKeyDown, 25);
 }
 
+// Display the game on the screen
+// In p5.js, the draw function is by default executed 60 times per second
 function draw() {
-    drawBackground();
-    shapes[0].display();
-    shapes[1].display();
+    drawBackground(); // Draws the black background and information text
+    shapes[0].display(); // Shows the current tetromino
+    shapes[1].display(); // Shows what the next tetromino will be
     
+    // Shows "PAUSE" if the game is paused (key: SPACEBAR)
     if (pause) {
         fill(255);
         text("PAUSE", gridX - 6*reso, scoreY);
     }
 }
 
+// Draws the black background and information text
 function drawBackground() {
-    background(0);
+    background(0); // Black background
     
-    // Write the score
+    // Write the score, the amount of lines completed, and the current level
     fill(255);
     text(score, scoreX, scoreY);
     text(linesCompleted, scoreX, scoreY + 1.5*reso);
     text(level, scoreX, scoreY + 3*reso);
     
+    // For each position in the grid, draws a circle of the grid[i][j] color [red, green, blue, alpha]
+    // at a location depending on the position's index
     for (var i = 0; i < grid.length; i++) {
         for (var j = 0; j < grid[i].length; j++) {
-            fill(color(grid[i][j][0], grid[i][j][1], grid[i][j][2], grid[i][j][3]));
-            ellipse(gridX + reso*i, gridY + reso*j, reso - gap, reso - gap);
+            var positionX = gridX + reso*i; // x position depending on the first dimention of the grid array
+            var positionY = gridY + reso*j; // y position depending on the second dimention of the grid array
+            var positionD = reso - gap; // Diameter of the circle
+            fill(color(grid[i][j][0], grid[i][j][1], grid[i][j][2], grid[i][j][3])); // Takes the rgb values at the position grid[i][j]
+            ellipse(positionX, positionY, positionD, positionD); // Draws the ellipse
         }
     }
 }
 
+// Check if the game must be updated, performed each "updateAllSpeed" (25 ms) from a setInterval declared in "setup"
 function checkUpdateAll() {
-    time += updateAllSpeed / 1000;
-    updateTime += 1;
-    var updateTimeRequired = 1000/updateAllSpeed / pow(1.2, level - 1);
+    time += updateAllSpeed / 1000; // Increment "time" by the actual time since the last time "checkUpdateAll" was called
+    updateTime += 1; // Increment "updateTime", the number of times "checkUpdateAll" was called since last game update (frame of animation)
     
+    // Level difficulty increases by reducing the time between two game update (i.e. increasing the speed)
+    // "updateTimeRequired" corresponds to the number of times "checkUpdateAll" must be called before actually updating the game
+    var updateTimeRequired = 1000 / updateAllSpeed / pow(1.2, level - 1);
+    
+    // If "checkUpdateAll" was called at least "updateTimeRequired" times, update the game and reset updateTime
     if (updateTime >= updateTimeRequired) {
-        updateAll();
-        updateTime = 0;
+        updateAll(); // This updates the game. The time between two "updateAll" calls reduces as "updateTimeRequired" reduces
+                     // i.e. as "level" increases. It corresponds to an increasing speed when going to a higher level.
+        updateTime = 0; // The number of times "checkUpdateAll" was called since last game update = 0, since the game was just updated
     }
 }
 
+// This function updates the state of the game, one frame of animation forward
 function updateAll() { 
+    // Only update if the game is not in PAUSE, and the game has not ended (game lost)
     if (!pause && !end) {
         // If there is a collision down, write the shape in grid[] and make a new shape
         if (shapes[0].collisionDown()) {
-            shapes[0].endShape(); // Add the shape to the grid
-            downPressed = false; // Next piece will begin by falling slowly
+            shapes[0].endShape(); // Add the shape to the grid. The color of the grid at each position the tetromino is becomes the color of the tetromino
+            downPressed = false; // Next piece will always begin by falling slowly
             checkLines(); // Check if the newly added shape closes a line
-            nextShapes(); // Update current & next shapes
+            nextShapes(); // What was the next shape (shapes[1]) becomes the current shape (shapes[0]), a new "next shape" is generated
             checkEnd(); // End the game if the new shape already has a collision
         } else {
-            // The shape goes down by 1 px
+            // If there is no collision down, the shape goes down by 1 position in the grid
             shapes[0].y += 1;
         }
     }
@@ -118,15 +149,17 @@ function updateAll() {
 
 // Perform actions when keys are pressed
 function keyPressed() {
-    if (keyCode === 32) { // Space bar
-        pause = !pause;
+    if (keyCode === 32) { // SPACE BAR
+        pause = !pause; // Pauses or unpauses the game
         downPressed = false; // To avoid bug of continuous down
     }
-    if (keyCode === 13) { // Enter
-        newGame();
-        end = false;
+    if (keyCode === 13) { // ENTER
+        newGame(); // Resets everything to begin a new game
+        end = false; // The new game begin, the game in not in "end" mode anymore
     } 
     
+    // Initiates tetromino movement if the game is not in pause
+    // Intentionally, the tetromino can still move in "end" mode
     if (!pause) {
         if (keyCode === LEFT_ARROW) {
             rightPressed = false; // To avoid bug keeping left/right pressed
