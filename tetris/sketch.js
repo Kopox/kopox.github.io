@@ -45,7 +45,7 @@ function setup() {
     // Print information
     print("v1.141");
     print("Hi! You can use the ARROWS, SPACEBAR to pause, and ENTER at the end to start a new game.");
-    
+    testFunction();
     // Create canvas and background
     createCanvas(windowWidth, windowHeight, 0, 0);
     background(0);
