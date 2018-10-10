@@ -43,7 +43,7 @@ var linesPerLevel = 10; // Amount of lines to complete before going to the next 
 // Ininitalization and declaration of the setInterval functions for the game to run
 function setup() {
     // Print information
-    print("v1.14");
+    print("v1.141");
     print("Hi! You can use the ARROWS, SPACEBAR to pause, and ENTER at the end to start a new game.");
     
     // Create canvas and background
@@ -62,7 +62,7 @@ function setup() {
     newGrid(); // "grid" becomes a two-dimentional array "gridCol" (10) * "gridRow" (20), initilized at color "gridCol"
     shapes[0] = new Shape(3, -2); // Each tetromino is a "Shape" object, described in shape.js
     shapes[1] = new Shape(12, 6);
-    
+    print(shapes);
     // Chose the font, update the text size and position depending on the size of the window
     textFont("Helvetica");
     //textSize(reso);
@@ -81,6 +81,7 @@ function setup() {
 // In p5.js, the draw function is by default executed 60 times per second
 function draw() {
     drawBackground(); // Draws the black background and information text
+    print(shapes);
     shapes[0].display(); // Shows the current tetromino
     shapes[1].display(); // Shows what the next tetromino will be
     
