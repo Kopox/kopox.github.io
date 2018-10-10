@@ -1,3 +1,8 @@
+print("shape.js working");
+testFunction = function() {
+    print("just fine");
+}
+
 class Shape {
     // Builds a shape
     constructor(x, y) {
