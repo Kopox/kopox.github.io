@@ -1,5 +1,5 @@
 print("shape.js working");
-testFunction = function() {
+function testFunction() {
     print("just fine");
 }
 
