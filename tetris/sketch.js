@@ -228,7 +228,6 @@ function keyReleased() {
 
 // Resizes the canvas and the graphic elements if the window is resized
 function windowResized() {
-    print("the window is resized");
     // Update the resolution and gap depending on the size of the window
     resizeCanvas(windowWidth, windowHeight);
     reso = min(floor(windowWidth/gridCol*0.4), floor(windowHeight/gridRow*0.9));
