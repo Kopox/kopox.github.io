@@ -162,25 +162,25 @@ function keyPressed() {
     // Intentionally, the tetromino can still move in "end" mode
     if (!pause) {
         if (keyCode === LEFT_ARROW) {
-            rightPressed = false; // To avoid bug keeping left/right pressed
-            leftPressed = true
-            leftDownTime = 0;
-            shapes[0].collisionLeft();
+            rightPressed = false; // Informs that RIGHT is not pressed anymore. Added to avoid a bug generate by keeping left/right pressed
+            leftPressed = true; // Informs that the LEFT key is pressed
+            leftDownTime = 0; // Resets the time LEFT key is pressed
+            shapes[0].collisionLeft(); // Checks of moving the tetromino to the left results in a collision
         } 
         if (keyCode === RIGHT_ARROW) {
-            leftPressed = false; // To avoid bug keeping left/right pressed
-            rightPressed = true;
-            rightDownTime = 0;
-            shapes[0].collisionRight();
+            leftPressed = false; // Informs that LEFT is not pressed anymore. Added to avoid a bug generate by keeping left/right pressed
+            rightPressed = true; // Informs that the RIGHT key is pressed
+            rightDownTime = 0; // Resets the time RIGHT key is pressed
+            shapes[0].collisionRight(); // Checks of moving the tetromino to the right results in a collision
         }
         if (keyCode === UP_ARROW) {
-            shapes[0].update();
+            shapes[0].update(); // Rotates the tetromino
         }
-        if (keyCode === DOWN_ARROW || keyCode === 87) { // KeyCode 87 is "W"
-            if (keyIsDown(16)) { // Shifte + DOWN = hard drop
-                hardDrop = true;
+        if (keyCode === DOWN_ARROW) {
+            if (keyIsDown(16)) { // keyCode 16 is SHIFT. SHIFT + DOWN results in a hard drop
+                hardDrop = true; // Informs that a hard drop must be performed
                 while(hardDrop && !end && !pause) {
-                    updateAll();
+                    updateAll(); // Updates the state of the game until the tetromino##############################
                 }
             } else {
                 downDownTime = 0;
