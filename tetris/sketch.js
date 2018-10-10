@@ -43,8 +43,8 @@ var linesPerLevel = 10; // Amount of lines to complete before going to the next 
 // Ininitalization and declaration of the setInterval functions for the game to run
 function setup() {
     // Print information
-    print("v1.141");
-    print("Hi! You can use the ARROWS, SPACEBAR to pause, and ENTER at the end to start a new game.");
+    console.log("v1.141");
+    console.log("Hi! You can use the ARROWS, SPACEBAR to pause, and ENTER at the end to start a new game.");
     testFunction();
     // Create canvas and background
     createCanvas(windowWidth, windowHeight, 0, 0);
@@ -62,7 +62,7 @@ function setup() {
     newGrid(); // "grid" becomes a two-dimentional array "gridCol" (10) * "gridRow" (20), initilized at color "gridCol"
     shapes[0] = new Shape(3, -2); // Each tetromino is a "Shape" object, described in shape.js
     shapes[1] = new Shape(12, 6);
-    print(shapes);
+    console.log(shapes);
     // Chose the font, update the text size and position depending on the size of the window
     textFont("Helvetica");
     //textSize(reso);
