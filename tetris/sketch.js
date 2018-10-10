@@ -338,14 +338,16 @@ function checkEnd() {
 // Refresh the grid & score, begin a new game
 function newGame() {
     newGrid(); // "grid" becomes a two-dimentional array "gridCol" (10) * "gridRow" (20), initilized at color "gridCol"
-    shapes.splice(0, 1);
-    shapes[0] = new Shape(3, -2);
+    //shapes.splice(0, 1);
+    shapes[0] = new Shape(3, -2); // Create new initial tetromino & "next tetromino"
     shapes[1] = new Shape(12, 6);
-
+    
+    // The best score of the session is stored. Note that it is not displayed
     if (score > bestScore) {
         bestScore = score;
     }
     
+    // Resets the level, score, and amount of lines completed
     level = 1
     score = 0;
     linesCompleted = 0;
