@@ -47,7 +47,7 @@ function setup() {
     // Create canvas and background
     createCanvas(windowWidth, windowHeight, 0, 0);
     background(0);
-    windowResize(); // Scale the graphic elements (reso, gap, textSize, gridX & gridY, scoreX & scoreY)
+    windowResized(); // Scale the graphic elements (reso, gap, textSize, gridX & gridY, scoreX & scoreY)
     // Update the resolution and gap depending on the size of the window
     //reso = min(floor(windowWidth/gridCol*0.4), floor(windowHeight/gridRow*0.9));
     //gap = reso/15;
@@ -240,7 +240,7 @@ function windowResized() {
     scoreY = gridY + reso;
 }
 
-// Create an empty grid
+// Initialize the two-dimensional array "grid" with "gridColor" at every position
 function newGrid() {
     for (var i = 0; i < gridCol; i++) {
         grid[i] = [];
@@ -250,34 +250,35 @@ function newGrid() {
     }
 }
 
-// Check if the newly added shape closes a line
+// When a tetromino (shape) lands, checks if the newly added shape closes a line
 function checkLines() {
     // Variables for the relative y position of the shape and the lines closed
     var linesClosed = [];
     
-    // For each of 4 lines potentially closed, check if the points are equal to background
+    // For each of the 4 lines potentially closed by the tetromino that just landed
+    // Check if there is an empty position, i.e. with color of this position in the grid equal to "gridCol"
     for (var i = shapes[0].y; i < shapes[0].y + 4 && i < 20; i++) {
-        // Initialize
-        var lineClosed = true;
+        // Initialize as if the line is closed
+        //var lineClosed = true;
         
-        // Lines above line 0 do not count
+        // Lines above line 0 do not count, there is grid there
         if (i < 0) {
-            lineClosed = false;
+            //lineClosed = false;
             break
         }
         
         // Check if there is an empty space in the line
         for (var j = 0; j < gridCol; j++) {
             if (grid[j][i] == gridColor) {
-                lineClosed = false;
+                //lineClosed = false; // If an empty space is found, the line is not closed
                 break;
             }
         }
         
         // If the line is closed, add it to the list of lines closed
-        if (lineClosed) {
+        //if (lineClosed) {
             linesClosed.push(i);
-        }
+        //}
     }
 
     // Add lines completed and eventually update the level
