@@ -45,18 +45,8 @@ var linesPerLevel = 10; // Amount of lines to complete before going to the next 
 function setup() {
     // Print information
     console.log("v1.141");
-<<<<<<< HEAD
-<<<<<<< HEAD
     console.log("Hi! You can use the ARROW KEYS, SPACEBAR to pause, and ENTER to start a new game.");
 
-=======
-    console.log("Hi! You can use the ARROWS, SPACEBAR to pause, and ENTER at the end to start a new game.");
-    testFunction();
->>>>>>> 5fac03013c3dd1a375767cdbf0e879a577f64978
-=======
-    console.log("Hi! You can use the ARROWS, SPACEBAR to pause, and ENTER at the end to start a new game.");
-    testFunction();
->>>>>>> 5fac03013c3dd1a375767cdbf0e879a577f64978
     // Create canvas and background
     createCanvas(windowWidth, windowHeight, 0, 0);
     background(0);
@@ -70,18 +60,6 @@ function setup() {
     newGrid(); // "grid" becomes a two-dimentional array "gridCol" (10) * "gridRow" (20), initilized at color "gridCol"
     shapes[0] = new Shape(3, -2); // Each tetromino is a "Shape" object, described in shape.js
     shapes[1] = new Shape(12, 6);
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 5fac03013c3dd1a375767cdbf0e879a577f64978
-    console.log(shapes);
-    // Chose the font, update the text size and position depending on the size of the window
-    textFont("Helvetica");
-    //textSize(reso);
-    //scoreX = gridX + 11.68*reso;
-    //scoreY = gridY + reso;
->>>>>>> 5fac03013c3dd1a375767cdbf0e879a577f64978
     
     // SetInterval of the function checkUpdateAll managing the game
     // Each "updateAllSpeed" (25) ms, checks if the game must be updated depending on the speed of the level
@@ -98,15 +76,7 @@ function setup() {
 // In p5.js, the draw function is by default executed 60 times per second
 function draw() {
     drawBackground(); // Draws the black background and information text
-<<<<<<< HEAD
-<<<<<<< HEAD
     infoText(); // Shows info text about the commands at the beginning, and if game is paused
-=======
-    print(shapes);
->>>>>>> 5fac03013c3dd1a375767cdbf0e879a577f64978
-=======
-    print(shapes);
->>>>>>> 5fac03013c3dd1a375767cdbf0e879a577f64978
     shapes[0].display(); // Shows the current tetromino
     shapes[1].display(); // Shows what the next tetromino will be
 }

@@ -1,12 +1,6 @@
-console.log("shape.js working");
-function testFunction() {
-    console.log("just fine");
-}
-
 class Shape {
     // Builds a shape
     constructor(x, y) {
-        console.log("Shape creation begin");
         this.x = x; // x position
         this.y = y; // y position
         this.color = [floor(random(150, 255)), floor(random(150, 255)), floor(random(150, 255)), 255]; // color
@@ -24,7 +18,6 @@ class Shape {
         
         // Initialize the shape of the tetromino
         this.update();
-        console.log("Shape creation end");
     }
     
     // Displays the shape
