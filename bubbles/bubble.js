@@ -1,74 +1,71 @@
 class Bubble {
     constructor(x, y, pic) {
-        this.maxTrail = 1; // No trail at the moment
-        this.trail = new Array(this.maxTrail);
-        this.trail.fill(createVector(x, y));
-        
-        this.pic = pic;
-        
-        this.rgb = [floor(random(100, 255)), floor(random(100, 255)), floor(random(100, 255))]
-        this.alpha = [];
-        this.alpha[0] = 110;
-        for (let i = 1; i < this.trail.length; i++) {
-            this.alpha[i] = map(i, 1, this.trail.length, 25, 10);
-        }
-        
-        this.eaten = false;
-        this.r = floor(random(2, 10));
-        this.d = this.r * 2;
+        this.pos = createVector(x, y); // Position vector where the bubble is created, center of the bubble
+        this.r = floor(random(2, 10)); // ~Random radius, used to determine the diameter and area
+        this.d = this.r * 2; // Diameter
         this.area = PI * this.r * this.r;
+        
+        this.pic = pic; // Picture to be displayed at the bubble's position
+        this.col = color(floor(random(100, 255)), floor(random(100, 255)), floor(random(100, 255)), 100) // ~Random color
+        this.dead = false; // The bubble lives. It dies when eaten or touching an edge
     }
     
+    // Random walk of the bubble
     update() {
-        for (let i = this.trail.length - 1; i >= 1; i--) {
-            this.trail[i] = this.trail[i+-1].copy();
-        }
-        
-        this.trail[0].add(p5.Vector.random2D()); //.mult() in case we need larger steps
+        this.pos.add(p5.Vector.random2D()); //.mult() in case we need larger steps
     }
     
-    show() {
-        strokeWeight(1);
-        for (let i = this.trail.length - 1; i >= 1; i--) {
-            stroke(255, this.alpha[i]);
-            fill(this.rgb[0], this.rgb[1], this.rgb[2], this.alpha[i]);
-            ellipse(this.trail[i].x, this.trail[i].y, this.d, this.d)
-        }
-        
+    // Displays the bubble: the picture + a colored transparent circle
+    show() {        
+        // Only displays the picture if there is one
+        // "this.pic" can be undefined if the pictures are not all loaded
         if (this.pic) {
-            imageMode(CENTER);
-            image(this.pic, this.trail[0].x, this.trail[0].y, this.d - 2, this.d - 2)
+            imageMode(CENTER); // this.pos is the center of the bubble
+            image(this.pic, this.pos.x, this.pos.y, this.d - 2, this.d - 2);
         }
         
-        stroke(255, this.alpha[0]);
-        fill(this.rgb[0], this.rgb[1], this.rgb[2], this.alpha[0])
-        ellipse(this.trail[0].x, this.trail[0].y, this.d, this.d)
+        // Displays a transparent colored circle on top of the picture
+        strokeWeight(1);
+        stroke(255, 100);
+        fill(this.col);
+        ellipse(this.pos.x, this.pos.y, this.d, this.d);
     }
     
+    // Informs that the bubble is dead if it touches an edge of the screen
     edge() {
-        if (this.trail[0].x - this.r < 0 || this.trail[0].x + this.r > width ||
-            this.trail[0].y - this.r < 0 || this.trail[0].y + this.r > height) {
-                this.eaten = true;
-                return true;
+        if (this.pos.x - this.r < 0 || this.pos.x + this.r > width ||
+            this.pos.y - this.r < 0 || this.pos.y + this.r > height) {
+            this.dead = true; // "dead" bubbles will be deleted at the end of the "draw" function
         }
     }
     
+    // Checks if this bubble intersects another bubble
     intersect(other) {
-        let rTot = this.r + other.r;
-        let dx = abs(this.trail[0].x - other.trail[0].x);
-        if (dx > rTot) return false;
-        let dy = abs(this.trail[0].y - other.trail[0].y);
-        if (dy > rTot) return false;
+        // First inexpensive check to avois distance calculations
+        // Checks the collision of boxes slightly larger than the bubbles
+        let safety = 10; // Error margin
+        let rTot = this.r + other.r; // Sum of the radii
+        let dx = abs(this.pos.x - other.pos.x);
+        if (dx > rTot + safety) return false; // The box cannot intersect, neither can the circles
+        let dy = abs(this.pos.y - other.pos.y);
+        if (dy > rTot + safety) return false; // The box cannot intersect, neither can the circles
         
-        let dSqr = dx * dx + dy * dy;
-        if (dSqr < rTot * rTot) return true;
-        return false;
+        // If the boxes intersect, check if the circles intersect
+        let dSqr = dx * dx + dy * dy; // Distance squared between the bubbles to avoid squareroot calculation
+        let diff = dSqr - rTot * rTot; // Comparison to the (sum of the radii) squared
+        if (diff < 0) return true; // Circles intersect if the distance between their center in inferior to the sum of their radii
+
+        return false; // Executes if diff >= 0
     }
     
+    // When two bubbles intersect, the largest (this) eats the smallest (other)
+    // The largest grows by the smallest's area, and the smallest dies
     eat(other) {
-        this.area += other.area;
-        this.r = sqrt(this.area / PI);
+        this.area += other.area; // The largest absorbs the smallest area
+        this.r = sqrt(this.area / PI); // Its radius and diameter must be recalculated
         this.d = 2 * this.r;
-        other.eaten = true;
+        this.d = min(this.d, width); // Its diameter cannot be larger than the window
+        this.d = min(this.d, height);
+        other.dead = true; // Informs that the smallest is dead
     }
 }

@@ -6,6 +6,7 @@
     It was made using p5.js, giving a "setup" function executing at the beginning and "draw" function executing each frame,
     as well as mathematical tools (e.g. "min"), drawing tools (e.g. "ellipse"), and events (e.g. "keyPressed") among others.
 */
+var inSetup = true;
 var tetrominoList = ["I", "O", "T", "S", "Z", "J", "L"]; // Tetrominos are Tetris pieces that are falling
 var shapes = []; // Array storing the shapes to be displayed on screen
 var pause = false; // Game pauses when true
@@ -17,6 +18,8 @@ var gridCol = 10;
 var gridRow = 20;
 var gridX = 100; // Initial x position of the grid, later adapted to the screen size
 var gridY = 100; // Initial y position of the grid, later adapted to the screen size
+var scoreX = 200; // Initial x position of the score text, later adapted to the screen size
+var scoreY = 100; // Initial x position of the score text, later adapted to the screen size
 var reso = 30; // Resolution of the game, i.e. width & height of a position in the grid, later adapted to the screen size
 var gap = 2; // Cirles in the gris have a diameter of (reso - gap) to space them
 
@@ -41,31 +44,36 @@ var linesPerLevel = 10; // Amount of lines to complete before going to the next 
 // Ininitalization and declaration of the setInterval functions for the game to run
 function setup() {
     // Print information
-    print("v1.14");
-    print("Hi! You can use the ARROWS, SPACEBAR to pause, and ENTER at the end to start a new game.");
-    
+    console.log("v1.141");
+<<<<<<< HEAD
+    console.log("Hi! You can use the ARROW KEYS, SPACEBAR to pause, and ENTER to start a new game.");
+
+=======
+    console.log("Hi! You can use the ARROWS, SPACEBAR to pause, and ENTER at the end to start a new game.");
+    testFunction();
+>>>>>>> 5fac03013c3dd1a375767cdbf0e879a577f64978
     // Create canvas and background
     createCanvas(windowWidth, windowHeight, 0, 0);
     background(0);
-    windowResized(); // Scale the graphic elements (reso, gap, textSize, gridX & gridY, scoreX & scoreY)
-    // Update the resolution and gap depending on the size of the window
-    //reso = min(floor(windowWidth/gridCol*0.4), floor(windowHeight/gridRow*0.9));
-    //gap = reso/15;
     
-    // Update x and y positions of the grid depending on the size of the window
-    //gridX = floor(windowWidth/2 - gridCol*reso/2);
-    //gridY = floor(windowHeight/2 - gridRow*reso/2) + reso/2;
+    // Scale the graphic elements (reso, gap, textSize, gridX & gridY, scoreX & scoreY)
+    windowResized();
+    // Chose the font, update the text size and position depending on the size of the window
+    textFont("Helvetica");
     
     // Create the grid and the first shapes, initizalize the positions
     newGrid(); // "grid" becomes a two-dimentional array "gridCol" (10) * "gridRow" (20), initilized at color "gridCol"
     shapes[0] = new Shape(3, -2); // Each tetromino is a "Shape" object, described in shape.js
     shapes[1] = new Shape(12, 6);
-    
+<<<<<<< HEAD
+=======
+    console.log(shapes);
     // Chose the font, update the text size and position depending on the size of the window
     textFont("Helvetica");
     //textSize(reso);
     //scoreX = gridX + 11.68*reso;
     //scoreY = gridY + reso;
+>>>>>>> 5fac03013c3dd1a375767cdbf0e879a577f64978
     
     // SetInterval of the function checkUpdateAll managing the game
     // Each "updateAllSpeed" (25) ms, checks if the game must be updated depending on the speed of the level
@@ -73,20 +81,22 @@ function setup() {
     
     // Counts the time a key (e.g. RIGHT) is pressed
     setInterval(checkKeyDown, 25);
+    
+    // Informs that setup ends, used in windowResized
+    inSetup = false;
 }
 
 // Display the game on the screen
 // In p5.js, the draw function is by default executed 60 times per second
 function draw() {
     drawBackground(); // Draws the black background and information text
+<<<<<<< HEAD
+    infoText(); // Shows info text about the commands at the beginning, and if game is paused
+=======
+    print(shapes);
+>>>>>>> 5fac03013c3dd1a375767cdbf0e879a577f64978
     shapes[0].display(); // Shows the current tetromino
     shapes[1].display(); // Shows what the next tetromino will be
-    
-    // Shows "PAUSE" if the game is paused (key: SPACEBAR)
-    if (pause) {
-        fill(255);
-        text("PAUSE", gridX - 6*reso, scoreY);
-    }
 }
 
 // Draws the black background and information text
@@ -109,6 +119,32 @@ function drawBackground() {
             fill(color(grid[i][j][0], grid[i][j][1], grid[i][j][2], grid[i][j][3])); // Takes the rgb values at the position grid[i][j]
             ellipse(positionX, positionY, positionD, positionD); // Draws the ellipse
         }
+    }
+}
+
+// Shows info text about the commands at the beginning, and if game is paused
+function infoText() {
+    // Shows "PAUSE" if the game is paused (key: SPACEBAR)
+    if (pause) {
+        fill(255);
+        text("PAUSE", gridX - 7*reso, scoreY);
+    }
+    
+    // Shows infos about the commands at the beginning
+    if (time < 10) {
+        var alpha = 255;
+        if (time > 4) { // After some time, the text fades away
+            alpha -= (time - 4) * 100;
+        }
+        fill(255, alpha);
+        
+        var textX = gridX - 7*reso;
+        text("MOVE:", textX, scoreY + 3.5 * reso)
+        text("ARROWS", textX, scoreY + 5 * reso)
+        text("PAUSE:", textX, scoreY + 8 * reso)
+        text("SPACEBAR", textX, scoreY + 9.5 * reso)
+        text("RESET:", textX, scoreY + 12.5 * reso)
+        text("ENTER", textX, scoreY + 14 * reso)
     }
 }
 
@@ -225,12 +261,11 @@ function keyReleased() {
 
 // Resizes the canvas and the graphic elements if the window is resized
 function windowResized() {
-    print("the window is resized");
     // Update the resolution and gap depending on the size of the window
-    resizeCanvas(windowWidth, windowHeight);
+    if (!inSetup) resizeCanvas(windowWidth, windowHeight);
     reso = min(floor(windowWidth/gridCol*0.4), floor(windowHeight/gridRow*0.9));
     gap = reso/15;
-    
+
     // Update x and y positions of the grid depending on the size of the window
     gridX = floor(windowWidth/2 - gridCol*reso/2);
     gridY = floor(windowHeight/2 - gridRow*reso/2) + reso/2;
@@ -238,7 +273,7 @@ function windowResized() {
     // Chose the font, update the text size and position depending on the size of the window
     textSize(reso);
     scoreX = gridX + 11.68*reso;
-    scoreY = gridY + reso;
+    scoreY = gridY + reso;  
 }
 
 // Initialize the two-dimensional array "grid" with "gridColor" at every position
@@ -260,26 +295,24 @@ function checkLines() {
     // Check if there is an empty position, i.e. with color of this position in the grid equal to "gridCol"
     for (var i = shapes[0].y; i < shapes[0].y + 4 && i < 20; i++) {
         // Initialize as if the line is closed
-        //var lineClosed = true;
+        var lineClosed = true;
         
         // Lines above line 0 do not count, there is grid there
         if (i < 0) {
-            //lineClosed = false;
+            lineClosed = false;
             break
         }
         
         // Check if there is an empty space in the line
         for (var j = 0; j < gridCol; j++) {
             if (grid[j][i] == gridColor) {
-                //lineClosed = false; // If an empty space is found, the line is not closed
+                lineClosed = false; // If an empty space is found, the line is not closed
                 break;
             }
         }
         
         // If the line is closed, add it to the list of lines closed
-        //if (lineClosed) {
-            linesClosed.push(i);
-        //}
+        if (lineClosed) linesClosed.push(i);
     }
 
     // Add the number of lines closed to "linesCompleted", to be displayed on screen, and eventually update the level
@@ -305,7 +338,7 @@ function checkLines() {
     for (var i = linesClosed.length - 1; i >= 0; i--) {
         // The lines that were higher that the line closed fall 1 position downward
         // We begin by the bottom-most line, which is the one with the highest index
-        for (var j = linesClosed[i] + (linesClosed.length - 1 - i); j >= 1; j--) { // Lines from lineClosed[i]
+        for (var j = linesClosed[i] + (linesClosed.length - 1 - i); j >= 1; j--) { // Lines from linesClosed[i]
             for (var k = 0; k < gridCol; k++) {
                 grid[k][j] = grid[k][j-1]; // Each position in "grid" takes the color of the position just on top
             }
@@ -330,7 +363,7 @@ function nextShapes() {
 // End if a tetromino already has a collision at its beginning position
 function checkEnd() {
     if (shapes[0].collision()) {
-        print("The End! Press ENTER to start a new game");
+        console.log("The End! Score: " + score + ". Press ENTER to start a new game");
         end = true;
     }  
 }
