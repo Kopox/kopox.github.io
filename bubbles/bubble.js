@@ -1,6 +1,6 @@
 class Bubble {
     constructor(x, y, pic) {
-        this.pos = createVector(x, y); // Position vector where the bubble is created, center of the bubble
+        this.pos = new Point(x, y, this); // Position vector where the bubble is created, center of the bubble
         this.r = floor(random(2, 10)); // ~Random radius, used to determine the diameter and area
         this.d = this.r * 2; // Diameter
         this.area = PI * this.r * this.r;
@@ -12,7 +12,9 @@ class Bubble {
     
     // Random walk of the bubble
     update() {
-        this.pos.add(p5.Vector.random2D()); //.mult() in case we need larger steps
+        let move = p5.Vector.random2D(); //.mult() in case we need larger steps
+        this.pos.x += move.x;
+        this.pos.y += move.y;
     }
     
     // Displays the bubble: the picture + a colored transparent circle
@@ -40,17 +42,10 @@ class Bubble {
     }
     
     // Checks if this bubble intersects another bubble
-    intersect(other) {
-        // First inexpensive check to avois distance calculations
-        // Checks the collision of boxes slightly larger than the bubbles
-        let safety = 10; // Error margin
+    intersects(other) {
         let rTot = this.r + other.r; // Sum of the radii
-        let dx = abs(this.pos.x - other.pos.x);
-        if (dx > rTot + safety) return false; // The box cannot intersect, neither can the circles
-        let dy = abs(this.pos.y - other.pos.y);
-        if (dy > rTot + safety) return false; // The box cannot intersect, neither can the circles
-        
-        // If the boxes intersect, check if the circles intersect
+        let dx = this.pos.x - other.pos.x;
+        let dy = this.pos.y - other.pos.y;
         let dSqr = dx * dx + dy * dy; // Distance squared between the bubbles to avoid squareroot calculation
         let diff = dSqr - rTot * rTot; // Comparison to the (sum of the radii) squared
         if (diff < 0) return true; // Circles intersect if the distance between their center in inferior to the sum of their radii
