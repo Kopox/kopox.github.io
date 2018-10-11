@@ -46,8 +46,13 @@ function setup() {
     // Print information
     console.log("v1.141");
 <<<<<<< HEAD
+<<<<<<< HEAD
     console.log("Hi! You can use the ARROW KEYS, SPACEBAR to pause, and ENTER to start a new game.");
 
+=======
+    console.log("Hi! You can use the ARROWS, SPACEBAR to pause, and ENTER at the end to start a new game.");
+    testFunction();
+>>>>>>> 5fac03013c3dd1a375767cdbf0e879a577f64978
 =======
     console.log("Hi! You can use the ARROWS, SPACEBAR to pause, and ENTER at the end to start a new game.");
     testFunction();
@@ -66,7 +71,10 @@ function setup() {
     shapes[0] = new Shape(3, -2); // Each tetromino is a "Shape" object, described in shape.js
     shapes[1] = new Shape(12, 6);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 5fac03013c3dd1a375767cdbf0e879a577f64978
     console.log(shapes);
     // Chose the font, update the text size and position depending on the size of the window
     textFont("Helvetica");
@@ -91,7 +99,11 @@ function setup() {
 function draw() {
     drawBackground(); // Draws the black background and information text
 <<<<<<< HEAD
+<<<<<<< HEAD
     infoText(); // Shows info text about the commands at the beginning, and if game is paused
+=======
+    print(shapes);
+>>>>>>> 5fac03013c3dd1a375767cdbf0e879a577f64978
 =======
     print(shapes);
 >>>>>>> 5fac03013c3dd1a375767cdbf0e879a577f64978
