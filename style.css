@@ -1,0 +1,36 @@
+body
+{
+    /*background-image: url(img/close-up-concrete-creativity-908286.jpg);*/
+    background-color: #222;
+    font-family: 'Roboto', sans-serif;
+    text-align: center;
+}
+
+#main {
+	position: relative;
+    top: 100px;
+}
+
+#title
+{
+    font-size: 40px;
+    color: #eee;
+    font-weight: bold;
+    text-shadow:1px 1px 0px #58f, 2px 2px 0px #25d;
+}
+
+#subtitle
+{
+    font-size: 24;
+    color: #ccc;
+    font-weight: bold;
+    margin-bottom: 50px;
+}
+
+.imgref
+{
+    margin-right: 20px;
+    margin-right: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
